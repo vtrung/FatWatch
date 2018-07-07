@@ -1,0 +1,9 @@
+// Create a config.js file
+// Copy content of this file into new config.js
+// Set Values to your environment
+
+var config = {};
+
+config.mongoConnectionString = "mongodb://localhost/test";
+
+module.exports = config;
