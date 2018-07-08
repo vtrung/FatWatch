@@ -3,10 +3,127 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/stylesheets/styles.css' />
+    <link rel='stylesheet' href='/libraries/vis.min.css' />
+    <script src="/libraries/vis.min.js"></script>
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <div id="EntryForm">
+      <form action="/" method="POST">
+        <label>Weight:</label><input type="number" name="weight"></br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <div id="EntryList">
+      <ul>
+        <% for(var i=0; i< entries.length; i++) { %>
+          <li>
+                  <% if(entries[i].datetime){ %>
+                   date:<%= entries[i].datetime.toLocaleString() %>
+                   / weight: <%= entries[i].weight %>
+                   <% } %>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+    <div id="Container">
+    </div>
+
+    <% if (entries) { %>
+      <script>
+         var weightEntries = <%- jsentries %>;  
+         console.log(weightEntries);   
+         //sanitizeData(weightEntries);
+         var container = document.getElementById('Container');
+
+          var items = [
+            // {x: '2014-06-11', y: 10},
+            // {x: '2014-06-12', y: 25},
+            // {x: '2014-06-13', y: 30},
+            // {x: '2014-06-14', y: 10},
+            // {x: '2014-06-15', y: 15},
+            // {x: '2014-06-16', y: 30}
+          ];
+
+          for(var i=0; i < weightEntries.length; i++){
+            if(weightEntries[i].datetime){
+              var newitem = {
+                x: weightEntries[i].datetime.toLocaleString(),
+                y: weightEntries[i].weight
+              }
+              items.push(newitem);
+            }
+          }
+
+          items = sanitizeData(weightEntries);
+
+          var dataset = new vis.DataSet(items);
+          var graph2d = new vis.Graph2d(container, dataset); 
+          // var options = {
+          //   start: '2014-06-10',
+          //   end: '2014-06-18'
+          // };
+          //var graph2d = new vis.Graph2d(container, dataset, options); 
+
+          function sanitizeData(entries){
+            var hasht = {};
+            var result = [];
+
+            entries.forEach(function(e){
+              console.log(e);
+              console.log(e.datetime);
+              if(e.datetime){
+                console.log("good");
+                var date = new Date(e.datetime);
+                var d = customDateFormat(date);
+                console.log(d);
+                if(!(d in hasht)){
+                  console.log("test");
+                  console.log(d);
+                  hasht[d] = true;
+                  var count = 1;
+                  var sum = e.weight;
+                  entries.forEach(function(j){
+                    if(j.datetime){
+                      var datej = new Date(j.datetime);
+                      var jd = customDateFormat(datej);
+                      if(j.datetime){
+                        count++;
+                        sum = sum + j.weight;
+                      }
+                    }
+                    
+                  });
+                  var avg = sum/count;
+                  var newitem = {
+                    x: d,
+                    y: avg
+                  }
+                  result.push(newitem);
+                }
+                  
+              } else {
+                console.log("bad");
+              }
+          })
+            
+            console.log(hasht);
+            console.log(result);
+            return result;
+          }
+
+          function customDateFormat(datetime){
+            var newdate = new Date(datetime.toLocaleString());
+            //newdate.setDate(datetime);
+            console.log(newdate);
+            var mm = newdate.getMonth()+1;
+            console.log(mm);
+            var dd = newdate.getDay()+1;
+            var yy = newdate.getFullYear();
+            return (mm + "/" + dd + "/" + yy);
+          }
+      </script>
+    <% } %>
   </body>
 </html>

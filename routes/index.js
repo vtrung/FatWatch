@@ -4,29 +4,41 @@ const Entry = require('../model/entry');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  test();
-  res.render('index', { title: 'FatWatch' });
+  //test();
+  Entry.find({}, function(err, result){
+    console.log(result);
+    res.render('index', { title: 'FatWatch', entries: result, jsentries: JSON.stringify(result) });
+  });
+  //res.render('index', { title: 'FatWatch', entries: {} });
 });
 
-/* test function */
-function test(){
-  console.log("test");
-  var random = Number(Math.floor(Math.random() * 100));
-  console.log(random);
-  var newentry = new Entry({
-    weight: random,
-    datetime: Date.now()
-  })
-  console.log(newentry);
+// POST submit entry form
+router.post('/', function(req,res, next){
+  console.log('received post request');
+  console.log(req.body);
+  if(req.body.weight){
+    var entry = CreateEntry(req.body.weight);
+    entry.save(function(err, entry){
+      console.log(entry);
+      console.log("successfully saved");
+      res.redirect('/');
+    })
+  } else {
+    res.redirect('/');
+  }
+  
+})
 
-  newentry.save(function(err, entry){
-      if(err){
-          console.log(err);
-          //return handleError(err);
-      } else {
-          console.log(entry);
-      }
-  });
+/* constructor for new Entry */
+function CreateEntry(weight){
+  var current = Date.now();
+  var newentry = new Entry({
+    weight: weight,
+    datetime: current
+  })
+  return newentry
 }
+
+
 
 module.exports = router;
