@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 
@@ -13,6 +14,14 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+// Use the session middleware
+// DOC https://github.com/expressjs/session
+app.use(session({ secret: 'secretsalt',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 * 60 }})
+);
 
 app.use(logger('dev'));
 app.use(express.json());

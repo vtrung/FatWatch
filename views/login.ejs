@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login to FatWatch</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/libraries/vis.min.css' />
+    <script src="/libraries/vis.min.js"></script>
+</head>
+<body>
+
+    <h1>FatWatch</h1>
+    <p>Login here</p>
+    <div>
+        <form method="POST" action="/users/login">
+            Username: <input type="text" name="username"></br>
+            Password: <input type="password" name="password"></br>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+    <div>
+    <a href="/register">Register</a>
+    </div>
+
+</body>
+</html>

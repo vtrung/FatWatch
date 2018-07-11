@@ -1,5 +1,3 @@
-
-
 var mongoose = require('mongoose');
 var config = require('../config.js');
 
@@ -7,12 +5,11 @@ mongoose.Promise = global.Promise;
 mongoose.connect(config.mongoConnectionString);
 var Schema = mongoose.Schema;
 
-var entrySchema = new Schema({
-    userid: String,
-    weight: Number,
-    datetime: Date,
+var userSchema = new Schema({
+    username: { type : String , unique : true, required : true},
+    password: String
 })
 
-var Entry = mongoose.model('Entry', entrySchema);
+var User = mongoose.model('User', userSchema);
 
-module.exports = Entry;
+module.exports = User;
