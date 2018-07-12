@@ -16,6 +16,19 @@
         <input type="submit" value="Submit">
       </form>
     </div>
+    <div>
+      <p> Create Group </p>
+      <form action="/group/create" method="POST">
+        <label>Groupname:</label><input type="text" name="groupid"></br>
+        <label>Username:</label><input type="text" name="userid"></br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <div>
+      <p> GroupList </p>
+      <div id="group-list">
+      </div>
+    </div>
     <div id="EntryList">
       <ul>
         <% for(var i=0; i< entries.length; i++) { %>

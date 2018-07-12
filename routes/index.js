@@ -18,7 +18,8 @@ function checkAuth(req, res, next) {
 
 /* GET home page. */
 router.get('/',checkAuth, function(req, res, next) {
-  Entry.find({}, function(err, result){
+  var userid = req.session.user_id;
+  Entry.find({userid:userid}, function(err, result){
     console.log(result);
     res.render('index', { title: 'FatWatch', entries: result, jsentries: JSON.stringify(result) });
   });
@@ -42,8 +43,11 @@ router.get('/logout', function (req, res, next) {
 router.post('/', function(req,res, next){
   console.log('received post Entry');
   console.log(req.body);
+  var userid = req.session.user_id;
   if(req.body.weight){
-    var entry = CreateEntry(req.body.weight);
+
+    var entry = CreateEntry(userid, req.body.weight);
+    
     entry.save(function(err, entry){
       console.log(entry);
       console.log("successfully saved");
@@ -60,11 +64,11 @@ router.post('/createuser', function(req,res,next){
   console.log(req.body);
   if(req.body.username){
     var user = CreateUser(req.body.username, req.body.password);
-    user.save(function(err, entry){
+    user.save(function(err, u){
       if(err){
         console.log(err);
       }
-      console.log(user);
+      console.log(u);
       console.log("successfully saved");
       res.redirect('/');
     })
@@ -74,9 +78,10 @@ router.post('/createuser', function(req,res,next){
 })
 
 /* constructor for new Entry */
-function CreateEntry(weight){
+function CreateEntry(userid, weight){
   var current = Date.now();
   var newentry = new Entry({
+    userid: userid,
     weight: weight,
     datetime: current
   })

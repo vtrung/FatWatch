@@ -4,6 +4,6 @@
 
 var config = {};
 
-config.mongoConnectionString = "mongodb://localhost/test";
+config.mongoConnectionString = "mongodb://localhost:27017/test";
 
 module.exports = config;

@@ -5,12 +5,11 @@ mongoose.Promise = global.Promise;
 mongoose.connect(config.mongoConnectionString, { useNewUrlParser: true });
 var Schema = mongoose.Schema;
 
-var entrySchema = new Schema({
-    userid: String,
-    weight: Number,
-    datetime: Date,
+var groupSchema = new Schema({
+    groupid: { type : String , unique : true, required : true},
+    userid: { type : String , required : true}
 })
 
-var Entry = mongoose.model('Entry', entrySchema);
+var Group = mongoose.model('Group', groupSchema);
 
-module.exports = Entry;
+module.exports = Group;
