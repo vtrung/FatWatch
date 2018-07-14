@@ -6,7 +6,7 @@ mongoose.connect(config.mongoConnectionString, { useNewUrlParser: true });
 var Schema = mongoose.Schema;
 
 var entrySchema = new Schema({
-    userid: String,
+    userid: {type: mongoose.Schema.Types.ObjectId, ref:"userSchema"},
     weight: Number,
     datetime: Date,
 })

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Entry = require('../model/entry');
 const User = require('../model/user');
+const Group = require('../model/group');
 
 
 //Check Authentication and User Sessions
@@ -19,9 +20,11 @@ function checkAuth(req, res, next) {
 /* GET home page. */
 router.get('/',checkAuth, function(req, res, next) {
   var userid = req.session.user_id;
+  //console.log(req.query);
+  var errmsg = req.query;
   Entry.find({userid:userid}, function(err, result){
     console.log(result);
-    res.render('index', { title: 'FatWatch', entries: result, jsentries: JSON.stringify(result) });
+    res.render('index', { title: 'FatWatch', entries: result, error: errmsg, jsentries: JSON.stringify(result) });
   });
 });
 
@@ -49,6 +52,8 @@ router.post('/', function(req,res, next){
     var entry = CreateEntry(userid, req.body.weight);
     
     entry.save(function(err, entry){
+      if(err)
+        console.log(err);
       console.log(entry);
       console.log("successfully saved");
       res.redirect('/');

@@ -6,11 +6,11 @@ mongoose.connect(config.mongoConnectionString, { useNewUrlParser: true });
 var Schema = mongoose.Schema;
 
 var groupMemberSchema = new Schema({
-    groupid: String,
-    userid: String
+    groupid: {type: mongoose.Schema.Types.ObjectId, ref:"groupScheme"},
+    userid: {type: mongoose.Schema.Types.ObjectId, ref:"userScheme"}
 })
 
-groupSchema.index({ groupid: 1, userid: 1 }, { unique: true })
+groupMemberSchema.index({ groupid: 1, userid: 1 }, { unique: true })
 
 var GroupMember = mongoose.model('GroupMember', groupMemberSchema);
 

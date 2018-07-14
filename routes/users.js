@@ -23,13 +23,11 @@ router.post('/login', function(req, res, next){
           'password':password
       },
       (err, u) => {
-          console.log("MEMBER");
-          console.log(u);
           if(err){
             res.redirect('/');
           }
-              
-          req.session.user_id = u.username;
+          req.session.user_id = u._id;
+          req.session.username = u.username;
           res.redirect('/');
       }
     )

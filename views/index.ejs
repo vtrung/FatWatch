@@ -10,6 +10,8 @@
     <div><a href="/logout">Logout</a></div>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+
+    <p style="color:red" class="error-message"><%= error %></p>
     <div id="EntryForm">
       <form action="/" method="POST">
         <label>Weight:</label><input type="number" name="weight"></br>
@@ -27,7 +29,17 @@
     <div>
       <p> GroupList </p>
       <div id="group-list">
+        
       </div>
+    </div>
+    <div>
+      <p> Add to Group </p>
+      <form action="/group/add" method="POST">
+
+      <label>Groupname:</label><input type="text" name="groupid"></br>
+      <label>Username:</label><input type="text" name="userid"></br>
+      <input type="submit" value="Submit">
+      </form>
     </div>
     <div id="EntryList">
       <ul>
@@ -60,6 +72,11 @@
             // {x: '2014-06-16', y: 30}
           ];
 
+          var options = {
+            zoomable: false,
+            moveable: false
+          }
+
           for(var i=0; i < weightEntries.length; i++){
             if(weightEntries[i].datetime){
               var newitem = {
@@ -73,7 +90,8 @@
           items = sanitizeData(weightEntries);
 
           var dataset = new vis.DataSet(items);
-          var graph2d = new vis.Graph2d(container, dataset); 
+          
+          var graph2d = new vis.Graph2d(container, dataset, options); 
           // var options = {
           //   start: '2014-06-10',
           //   end: '2014-06-18'
