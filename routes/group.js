@@ -5,8 +5,15 @@ const Group = require('../model/group');
 const GroupMember = require('../model/groupmember');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
+router.get('/:groupname', function(req, res, next) {
+    //res.send('respond with a resource');
+    //res.send(req.params)
+    console.log(req.params.groupname);
+    var groupname = req.params.groupname;
+    GetGroupByGroupname(groupname, function(err, result){
+        console.log(result);
+        res.render('group', { group: result});
+    });
   });
 
 router.get('/list', function(req, res, next){
@@ -52,31 +59,6 @@ router.post('/create', function(req, res, next) {
         console.log(gm);
         res.redirect('/');
     });
-    // Group.findOne({groudid: groupid}, function(err, g){
-    //     if(err)
-    //         res.redirect('/');
-    //     if(g){
-    //         User.findONe({username: userid}, function(err2, u){
-    //             if(err2)
-    //                 res.redirect('/');
-    //         })
-    //     } else {
-    //         res.redirect('/');
-    //     }
-        
-    // })
-    // if(groupid){
-    //     groupmember.save(function(err, gm){
-    //         if(err){
-    //           console.log(err);
-    //         }
-    //         console.log(gm);
-    //         console.log("successfully saved");
-    //         res.redirect('/');
-    //       })
-    // } else {
-    //     res.redirect('/');
-    // }
     
   });
 
@@ -132,13 +114,37 @@ function SaveGroupMember(groupid, userid, callback){
     })
 }
 
+function GetUsersByGroup(groupid, callback){
+    GetGroupByGroupname(groupid, function(err, group){
+        if(group){
 
+        }
+    })
+}
+
+function GetMembersByGroup(groupid, callback){
+    GroupMember.find({groupid:groupid}, function(err, gms){
+        console.log(gms);
+        var user_ids = [];
+        for(var i = 0; i < gms.length; i++){
+            user_ids.push(gms[0].userid);
+        }
+        GerUsersInList(user_ids, function(err, list){
+            console.log(list);
+        });
+
+    })
+}
 function GetGroupByGroupname(groupid, callback){
-    Group.findOne({groupid: groupid}, (err, group) => {
+    console.log("get group by groupname");
+    console.log(groupid);
+    Group.findOne({groupid:groupid}, (err, res) => {
         if(err){
+            console.log(err);
             callback(err, null);
         } else {
-            callback(err, group);
+            console.log(res);
+            callback(err, res);
         }
     })
 }
@@ -151,6 +157,15 @@ function GetUserByUsername(username, callback){
             callback(err, user);
         }
     })
+}
+
+function GetUsersInList(useridlist, callback){
+    User.find({
+            '_id':{$in: useridlist}
+    }, function(err, result){
+        console.log(result);
+        callback(err, result);
+    });
 }
 
 module.exports = router;
