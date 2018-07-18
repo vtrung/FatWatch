@@ -1,75 +1,85 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/libraries/vis.min.css' />
-    <script src="/libraries/vis.min.js"></script>
-  </head>
+  <%- include('partials/head'); -%>
   <body>
-    <div><a href="/logout">Logout</a></div>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <div id="fw-header">
+      <h1>FatWatch</h1>
+      <p>Hello, <%= username %></p>
+      <a href="/logout">Logout</a>
+    </div>
 
-    <p style="color:red" class="error-message"><%= error %></p>
-    <div id="EntryForm">
-      <form action="/" method="POST">
-        <label>Weight:</label><input type="number" name="weight"></br>
-        <input type="submit" value="Submit">
-      </form>
-    </div>
-    <div>
-      <p> Create Group </p>
-      <form action="/group/create" method="POST">
-        <label>Groupname:</label><input type="text" name="groupid"></br>
-        <label>Username:</label><input type="text" name="userid"></br>
-        <input type="submit" value="Submit">
-      </form>
-    </div>
-    <div>
-      <p> GroupList </p>
-      <div id="group-list">
-        
+    <div class="fw-main">
+
+      <div class="fw-sidebar">
+        <p style="color:red" class="error-message"><%= error %></p>
+        <div id="EntryForm">
+          <form action="/" method="POST">
+            <label>Weight:</label><input type="number" name="weight"></br>
+            <input type="submit" value="Submit">
+          </form>
+        </div>
+        <div>
+          <p> Create Group </p>
+          <form action="/group/create" method="POST">
+            <label>Groupname:</label><input type="text" name="groupname"></br>
+            <input type="submit" value="Submit">
+          </form>
+        </div>
+        <div>
+          <p> GroupList </p>
+          <div id="group-list">
+            
+          </div>
+        </div>
+        <div>
+          <p> Add to Group </p>
+          <form action="/group/add" method="POST">
+
+          <label>Groupname:</label><input type="text" name="groupname"></br>
+          <label>Username:</label><input type="text" name="username"></br>
+          <input type="submit" value="Submit">
+          </form>
+        </div>
       </div>
+      
+      <div class="fw-content">
+        <div id="EntryList">
+          <ul>
+            <% for(var i=0; i< entries.length; i++) { %>
+              <li>
+                      <% if(entries[i].datetime){ %>
+                      date:<%= entries[i].datetime.toLocaleString() %>
+                      / weight: <%= entries[i].weight %>
+                      <% } %>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+        <div id="entry-graph">
+        </div>
+      </div>
+      
+      
     </div>
-    <div>
-      <p> Add to Group </p>
-      <form action="/group/add" method="POST">
 
-      <label>Groupname:</label><input type="text" name="groupid"></br>
-      <label>Username:</label><input type="text" name="userid"></br>
-      <input type="submit" value="Submit">
-      </form>
-    </div>
-    <div id="EntryList">
-      <ul>
-        <% for(var i=0; i< entries.length; i++) { %>
-          <li>
-                  <% if(entries[i].datetime){ %>
-                   date:<%= entries[i].datetime.toLocaleString() %>
-                   / weight: <%= entries[i].weight %>
-                   <% } %>
-          </li>
-        <% } %>
-      </ul>
-    </div>
-    <div id="Container">
-    </div>
+    
 
     <% if (entries) { %>
       <script>
          var weightEntries = <%- jsentries %>;  
-         console.log(weightEntries);   
+         //console.log(weightEntries);   
          //sanitizeData(weightEntries);
-         var container = document.getElementById('Container');
+         var container = document.getElementById('entry-graph');
 
           var items = [
-            // {x: '2014-06-11', y: 10},
-            // {x: '2014-06-12', y: 25},
-            // {x: '2014-06-13', y: 30},
-            // {x: '2014-06-14', y: 10},
-            // {x: '2014-06-15', y: 15},
-            // {x: '2014-06-16', y: 30}
+            // {x: '2014-06-13', y: 30, group: 0},
+            // {x: '2014-06-14', y: 10, group: 0},
+            // {x: '2014-06-14', y: 10, group: 1},
+            // {x: '2014-06-14', y: 10, group: 1},
+            // {x: '2014-06-15', y: 15, group: 1},
+            // {x: '2014-06-16', y: 30, group: 0},
+            // {x: '2014-06-17', y: 10, group: 1},
+            // {x: '2014-06-18', y: 15, group: 1}
           ];
 
           var options = {
@@ -98,62 +108,16 @@
           // };
           //var graph2d = new vis.Graph2d(container, dataset, options); 
 
-          function sanitizeData(entries){
-            var hasht = {};
-            var result = [];
-
-            entries.forEach(function(e){
-              console.log(e);
-              console.log(e.datetime);
-              if(e.datetime){
-                console.log("good");
-                var date = new Date(e.datetime);
-                var d = customDateFormat(date);
-                console.log(d);
-                if(!(d in hasht)){
-                  console.log("test");
-                  console.log(d);
-                  hasht[d] = true;
-                  var count = 1;
-                  var sum = e.weight;
-                  entries.forEach(function(j){
-                    if(j.datetime){
-                      var datej = new Date(j.datetime);
-                      var jd = customDateFormat(datej);
-                      if(j.datetime){
-                        count++;
-                        sum = sum + j.weight;
-                      }
-                    }
-                    
-                  });
-                  var avg = sum/count;
-                  var newitem = {
-                    x: d,
-                    y: avg
-                  }
-                  result.push(newitem);
-                }
-                  
-              } else {
-                console.log("bad");
-              }
-          })
-            
-            console.log(hasht);
-            console.log(result);
-            return result;
-          }
+          
 
           function customDateFormat(datetime){
             var newdate = new Date(datetime.toLocaleString());
             //newdate.setDate(datetime);
             console.log(newdate);
             var mm = newdate.getMonth()+1;
-            console.log(mm);
             var dd = newdate.getDay()+1;
             var yy = newdate.getFullYear();
-            return (mm + "/" + dd + "/" + yy);
+            return (yy + "-" + mm + "-" + dd);
           }
       </script>
     <% } %>

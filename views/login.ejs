@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Login to FatWatch</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/libraries/vis.min.css' />
-    <script src="/libraries/vis.min.js"></script>
-</head>
+<%- include('partials/head'); -%>
 <body>
-
-    <h1>FatWatch</h1>
-    <p>Login here</p>
-    <div>
-        <form method="POST" action="/users/login">
-            Username: <input type="text" name="username"></br>
-            Password: <input type="password" name="password"></br>
-            <input type="submit" value="Login">
-        </form>
+    <div id="fw-header">
+        <h1>FatWatch</h1>
     </div>
-    <div>
-    <a href="/register">Register</a>
-    </div>
+    <div class="fw-main">
 
+        <div class="fw-sidebar">
+            <a href="/register">Register</a>
+        </div>
+        
+        <div class="fw-content">
+            <p>Login here</p>
+            <div>
+                <form method="POST" action="/users/login">
+                    Username: <input type="text" name="username"></br>
+                    Password: <input type="password" name="password"></br>
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+        <div>
+    </div>
 </body>
 </html>

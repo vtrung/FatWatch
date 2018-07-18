@@ -20,11 +20,12 @@ function checkAuth(req, res, next) {
 /* GET home page. */
 router.get('/',checkAuth, function(req, res, next) {
   var userid = req.session.user_id;
+  var username = req.session.username;
   //console.log(req.query);
   var errmsg = req.query;
-  Entry.find({userid:userid}, function(err, result){
+  Entry.find({user:userid}, function(err, result){
     console.log(result);
-    res.render('index', { title: 'FatWatch', entries: result, error: errmsg, jsentries: JSON.stringify(result) });
+    res.render('index', { title: 'FatWatch', username:username, entries: result, error: errmsg, jsentries: JSON.stringify(result) });
   });
 });
 
@@ -86,7 +87,7 @@ router.post('/createuser', function(req,res,next){
 function CreateEntry(userid, weight){
   var current = Date.now();
   var newentry = new Entry({
-    userid: userid,
+    user: userid,
     weight: weight,
     datetime: current
   })

@@ -6,8 +6,8 @@ mongoose.connect(config.mongoConnectionString, { useNewUrlParser: true });
 var Schema = mongoose.Schema;
 
 var groupSchema = new Schema({
-    groupid: { type : String , unique : true, required : true},
-    userid: { type : String , required : true}
+    groupname: { type : String , unique : true, required : true},
+    creater: {type: mongoose.Schema.Types.ObjectId, ref:"userScheme", required: true}
 })
 
 var Group = mongoose.model('Group', groupSchema);

@@ -6,9 +6,9 @@ mongoose.connect(config.mongoConnectionString, { useNewUrlParser: true });
 var Schema = mongoose.Schema;
 
 var entrySchema = new Schema({
-    userid: {type: mongoose.Schema.Types.ObjectId, ref:"userSchema"},
-    weight: Number,
-    datetime: Date,
+    user: {type: mongoose.Schema.Types.ObjectId, ref:"userSchema", required: true},
+    weight: {type:Number, required: true},
+    datetime: {type:Date, required: true},
 })
 
 var Entry = mongoose.model('Entry', entrySchema);

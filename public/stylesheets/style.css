@@ -1,8 +1,28 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+  margin: 0;
+  padding: 0; }
 
-a {
-  color: #00B7FF; }
+#fw-header {
+  background: #42eef4;
+  width: 100%;
+  overflow: auto;
+  color: #FFF;
+  padding: 50px; }
+
+.fw-main {
+  width: 100%;
+  min-height: 100vh;
+  overflow: auto;
+  padding: 50px; }
+  .fw-main .fw-sidebar {
+    overflow: auto;
+    float: left;
+    width: 20%; }
+  .fw-main .fw-content {
+    overflow: auto;
+    float: left;
+    width: 80%; }
+    .fw-main .fw-content #entry-graph {
+      width: 800px; }
 
 /*# sourceMappingURL=style.css.map */
