@@ -23,8 +23,9 @@ router.post('/login', function(req, res, next){
           'password':password
       },
       (err, u) => {
-          if(err){
-            res.redirect('/');
+          if(err || u == null){
+            res.redirect('/?error=failed login');
+            return;
           }
           req.session.user_id = u._id;
           req.session.username = u.username;
