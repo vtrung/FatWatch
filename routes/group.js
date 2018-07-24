@@ -41,8 +41,8 @@ router.post('/create', function(req, res, next) {
               //res.redirect('/?Error=' + encodeURIComponent('something that would break'));
             } else {
                 var gm = new GroupMember({
-                    groud: gp._id,
-                    creator: userid
+                    group: gp._id,
+                    user: userid
                 })
                 gm.save(function(err, result){
                     if(err){

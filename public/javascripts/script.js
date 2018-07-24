@@ -12,6 +12,21 @@ function GetList(){
   });
 }
 
+function groupGetUsers(groupid){
+  $.ajax({
+    url: "group/list",
+    post: {},
+    cache: false
+  }).done(function(result) {
+    console.log(result);
+    result.forEach((gp) =>{
+      if(gp.groupname){
+        $("#group-list").append('<li><a href="group/id/' + gp._id + '">' + gp.groupname + '</a></li>');
+      }
+    })
+  });
+}
+
 function sanitizeData(entries){
     var hasht = {};
     var result = [];
