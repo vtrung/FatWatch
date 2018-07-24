@@ -27,9 +27,9 @@
         </div>
         <div>
           <p> GroupList </p>
-          <div id="group-list">
+          <ul id="group-list">
             
-          </div>
+          </ul>
         </div>
         <div>
           <p> Add to Group </p>
@@ -115,10 +115,14 @@
             //newdate.setDate(datetime);
             console.log(newdate);
             var mm = newdate.getMonth()+1;
-            var dd = newdate.getDay()+1;
+            var dd = newdate.getDate();
             var yy = newdate.getFullYear();
             return (yy + "-" + mm + "-" + dd);
           }
+
+          $(document).ready(function(){
+            GetList();
+          })
       </script>
     <% } %>
   </body>

@@ -24,7 +24,7 @@
 
 // var groupSchema = new Schema({
 //     groupname: { type : String , unique : true, required : true},
-//     creater: {type: mongoose.Schema.Types.ObjectId, ref:"userScheme"}
+//     creator: {type: mongoose.Schema.Types.ObjectId, ref:"userScheme"}
 // })
 
 // var Group = mongoose.model('Group', groupSchema);
@@ -41,5 +41,4 @@
 // module.exports = Entry;
 // module.exports = Group;
 // module.exports = GroupMember;
-
 // module.exports = User;

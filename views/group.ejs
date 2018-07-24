@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Login to FatWatch</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/libraries/vis.min.css' />
-    <script src="/libraries/vis.min.js"></script>
-</head>
+<%- include('partials/head'); -%>
 <body>
-
-    <h1><a href="/">FatWatch</a></h1>
-    <p><%= group.groupid %></p>
-    <p> Creater: <%= group.userid %> </p>
-   
-    <div>
-    <a href="/register">Register</a>
+    <div id="fw-header">
+        <h1>FatWatch</h1>
+        
+    </div>
+    <div class="fw-main">
+        <div class="fw-sidebar">
+            <% for(var i=0; i<group.length; i++) {%>
+                <p><%= group[i].username %></p>
+            <% } %>
+        </div>
+        
+        <div class="fw-content">
+        
+        </div>
     </div>
 
 </body>

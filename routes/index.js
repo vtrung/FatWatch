@@ -4,7 +4,6 @@ const Entry = require('../model/entry');
 const User = require('../model/user');
 const Group = require('../model/group');
 
-
 //Check Authentication and User Sessions
 function checkAuth(req, res, next) {
   console.log("checkauth");

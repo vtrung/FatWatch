@@ -1,25 +1,30 @@
 var express = require('express');
 var router = express.Router();
-const User = require('../model/scheme');
+const User = require('../model/user');
 const Group = require('../model/group');
 const GroupMember = require('../model/groupmember');
 
 /* GET users listing. */
-router.get('/groupid/:groupname', function(req, res, next) {
-    //res.send('respond with a resource');
-    //res.send(req.params)
-    console.log(req.params.groupname);
-    var groupname = req.params.groupname;
-    GetGroupMembersByGroupname(groupname, function(err, result){
+router.get('/id/:id', function(req, res, next) {
+    var groupname = req.params.id;
+    GetGroupMembersByGroupId(groupname, function(err, result){
         console.log(result);
         res.render('group', { group: result});
     });
   });
 
+
 router.get('/list', function(req, res, next){
     var user_id = req.session.user_id;
+    console.log(user_id);
     GetUserGroups(user_id, function(err, result){
-        res.send(result);
+        if(err){
+            console.log("error");
+            res.send({});
+        } else {
+            res.send(result);
+        }
+        
     })
 });
 
@@ -37,7 +42,7 @@ router.post('/create', function(req, res, next) {
             } else {
                 var gm = new GroupMember({
                     groud: gp._id,
-                    user: userid
+                    creator: userid
                 })
                 gm.save(function(err, result){
                     if(err){
@@ -73,7 +78,7 @@ router.post('/create', function(req, res, next) {
 function CreateGroup(groupid, userid){
     var group = new Group({
         groupname: groupid,
-        user: userid
+        creator: userid
     })
     return group;
 }
@@ -121,27 +126,27 @@ function SaveGroupMember(groupid, userid, callback){
     })
 }
 
-function GetUsersByGroup(groupid, callback){
-    GetGroupByGroupname(groupid, function(err, group){
-        if(group){
+// function GetUsersByGroup(groupid, callback){
+//     GetGroupByGroupname(groupid, function(err, group){
+//         if(group){
 
-        }
-    })
-}
+//         }
+//     })
+// }
 
-function GetMembersByGroup(groupid, callback){
-    GroupMember.find({groupid:groupid}, function(err, gms){
-        console.log(gms);
-        var user_ids = [];
-        for(var i = 0; i < gms.length; i++){
-            user_ids.push(gms[0].userid);
-        }
-        GerUsersInList(user_ids, function(err, list){
-            console.log(list);
-        });
+// function GetMembersByGroup(groupid, callback){
+//     GroupMember.find({groupid:groupid}, function(err, gms){
+//         console.log(gms);
+//         var user_ids = [];
+//         for(var i = 0; i < gms.length; i++){
+//             user_ids.push(gms[0].userid);
+//         }
+//         GerUsersInList(user_ids, function(err, list){
+//             console.log(list);
+//         });
 
-    })
-}
+//     })
+// }
 
 
 function GetUserByUsername(username, callback){
@@ -158,62 +163,81 @@ function GetUsersInList(useridlist, callback){
     User.find({
             '_id':{$in: useridlist}
     }, function(err, result){
-        console.log(result);
-        callback(err, result);
+        if(err || result.length < 1)
+            callback(err, null);
+        else
+            callback(err, result);
     });
 }
 function GetGroupByGroupname(groupname, callback){
     console.log("GetGroupByGroupname");
     console.log(groupname);
     Group.findOne({groupname:groupname}, (err, group)=>{
-        if(err){
+        if(err || group.length < 1){
             callback(err, null);
         } else {
             callback(err, group);
         }
     })
 }
-function GetGroupMembersByGroupname(groupname, callback){
-    GetGroupByGroupname(groupname, function(err, group){
-        console.log("GetGroupMembersByGroupname");
-    console.log(group);
-        if(err){
+
+function GetGroupMembersByGroupId(groupid, callback){
+    
+    GroupMember.find({group:groupid}, (err, res) => {
+        if(err || res.length < 1){
             callback(err, null);
         } else {
-            GroupMember.find({group:group._id})
-            .populate("Group")
-            .exec(function(gmerr, gms){
-                if(gmerr){
-                    callback(gmerr, null);
-                } else {
-                    console.log(gms);
-                    console.log(gms[0].group.groupname);
-                    callback(gmerr, gms);
+            var list = [];
+            res.forEach((gm) => {
+                if(gm.user){
+                    list.push(gm.user);
                 }
             })
+            GetUsersInList(list, callback);
         }
-
     })
-    
 }
+
+
+
+// functions for get list of groups
 function GetUserGroups(userid, callback){
 
     if(!userid){
+        console.log("userid is null: " + userid);
         callback("userid is null", null);
         return;
     }
         
-    GroupMember.find({user:userid})
-        .populate('group')
-        .exec( (err, groups)=>{
-            console.log(groups);
-            console.log(groups[0].groupid);
-            if(err){
-                callback(err, null);
-            } else {
-                callback(err, groups);
-            }
-                
-        })
+    GroupMember.find({user:userid}, (err, res) => {
+        console.log(res);
+        if(err || res.length < 1){
+            callback(err, null);
+        } else {
+            //callback(err, res);
+            var list = [];
+            res.forEach((gm) => {
+                if(gm.group){
+                    list.push(gm.group);
+                }
+            })
+            GetGroupNamesFromGroupIdList(list, callback);
+        }
+    });
 }
+
+function GetGroupNamesFromGroupIdList(list, callback){
+    Group.find({
+        '_id':{$in: list}
+    }, (err, res) =>{
+        console.log(res);
+        if(err || res.length < 1){
+            callback(err, null);
+        } else {
+            callback(err, res);
+        }
+    });
+}
+
+
 module.exports = router;
