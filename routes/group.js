@@ -1,20 +1,45 @@
 var express = require('express');
 var router = express.Router();
+const Entry = require('../model/entry');
 const User = require('../model/user');
 const Group = require('../model/group');
 const GroupMember = require('../model/groupmember');
 
+//Check Authentication and User Sessions
+function checkAuth(req, res, next) {
+    //console.log("checkauth");
+    //console.log(req.session);
+    if (!req.session.user_id) {
+        //redirect to login
+        res.render('login');
+    } else {
+        next();
+    }
+  };
+
 /* GET users listing. */
-router.get('/id/:id', function(req, res, next) {
-    var groupname = req.params.id;
-    GetGroupMembersByGroupId(groupname, function(err, result){
-        console.log(result);
-        res.render('group', { group: result});
+router.get('/id/:id',checkAuth, function(req, res, next) {
+    var groupid = req.params.id;
+    GetGroupMembersByGroupId(groupid, function(err, gm){
+        console.log(gm);
+        GetGroupById(groupid, function(err, g){
+            var list = UserConvertToList(gm);
+            //res.render('group', { groupmembers: gm, group:g});
+            console.log(list);
+            Entry.find({
+                'user':{$in: list}
+            }, (err, e) =>{
+                console.log(e);
+                res.render('group', { groupmembers: gm, group:g, entries:JSON.stringify(e)});
+            });
+            
+        })
+        //res.render('group', { group: result});
     });
   });
 
 
-router.get('/list', function(req, res, next){
+router.get('/list',checkAuth, function(req, res, next){
     var user_id = req.session.user_id;
     console.log(user_id);
     GetUserGroups(user_id, function(err, result){
@@ -28,7 +53,7 @@ router.get('/list', function(req, res, next){
     })
 });
 
-router.post('/create', function(req, res, next) {
+router.post('/create',checkAuth, function(req, res, next) {
     var groupname = req.body.groupname;
     var userid = req.session.user_id;
     var group = CreateGroup(groupname, userid);
@@ -52,8 +77,6 @@ router.post('/create', function(req, res, next) {
                     }
                 })
             }
-            
-            
             res.redirect('/');
           })
     } else {
@@ -62,11 +85,12 @@ router.post('/create', function(req, res, next) {
     
   });
 
-  router.post('/add', function(req, res, next) {
-    var groupname = req.body.groupname;
+  router.post('/add',checkAuth, function(req, res, next) {
+    //var groupname = req.body.groupname;
     var username = req.body.username;
+    var groupid = req.body.groupid;
     //var groupmember = CreateGroupMember(groupid, userid);
-    var gm = SaveGroupMember(groupname, username, function(err, gm){
+    var gm = SaveGroupMember(groupid, username, function(err, gm){
         console.log(err);
         console.log(gm);
         res.redirect('/');
@@ -74,6 +98,22 @@ router.post('/create', function(req, res, next) {
     
   });
 
+function UserConvertToList(userlist){
+    var list = [];
+    console.log("userlist");
+    console.log(userlist);
+    userlist.forEach((u)=>{
+        console.log("U");
+        console.log(u);
+        if(u){
+            console.log("push" + u._id);
+            list.push(u._id);
+        }
+    })
+    console.log("finished list");
+    console.log(list);
+    return list;
+}
 // Construct Group
 function CreateGroup(groupid, userid){
     var group = new Group({
@@ -94,33 +134,21 @@ function CreateGroupMember(groupid, userid){
 
 // Save GroupMember
 function SaveGroupMember(groupid, userid, callback){
-    GetGroupByGroupname(groupid, (err, group) => {
-        if(err){
-            console.log("Error: group not found: " + groupid);
-            callback(err, null);
+
+    GetUserByUsername(userid, (uerr, user) => {
+        if(uerr){
+            callback(uerr, null);
             return;
-        } 
-        if(group != null){
-            var group_id = group._id;
-            GetUserByUsername(userid, (uerr, user) => {
-                if(uerr){
-                    callback(uerr, null);
-                    return;
-                }
-                if(user != null){
-                    var user_id = user._id
-                    var gm = CreateGroupMember(group_id, user_id);
-                    gm.save((gmerr,gmres) => {
-                        callback(gmerr, gmres);
-                        return;
-                    })
-                } else {
-                    callback(uerr, null);
-                    return;
-                }
+        }
+        if(user != null){
+            var user_id = user._id
+            var gm = CreateGroupMember(groupid, user_id);
+            gm.save((gmerr,gmres) => {
+                callback(gmerr, gmres);
+                return;
             })
         } else {
-            callback(err, null);
+            callback(uerr, null);
             return;
         }
     })
@@ -177,6 +205,16 @@ function GetGroupByGroupname(groupname, callback){
             callback(err, null);
         } else {
             callback(err, group);
+        }
+    })
+}
+
+function GetGroupById(groupid, callback){
+    Group.findById(groupid, (err, res)=>{
+        if(err){
+            callback(err, null); 
+        } else {
+            callback(err, res);
         }
     })
 }

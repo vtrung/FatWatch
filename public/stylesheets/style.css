@@ -25,4 +25,31 @@ body {
     .fw-main .fw-content #entry-graph {
       width: 800px; }
 
+.fw-form .fw-input-group {
+  display: flex; }
+  .fw-form .fw-input-group p {
+    float: left;
+    width: 80px;
+    margin: 0;
+    padding: 12px 0px; }
+  .fw-form .fw-input-group input {
+    float: left; }
+
+.fw-btn {
+  padding: 10px;
+  color: white;
+  background: green;
+  border: none;
+  width: 100px;
+  border-radius: 5px; }
+
+.fw-input {
+  margin: 5px 10px;
+  height: 20px;
+  border-radius: 5px;
+  box-shadow: none;
+  text-shadow: none;
+  border: 1px solid gray;
+  padding: 5px; }
+
 /*# sourceMappingURL=style.css.map */

@@ -11,18 +11,19 @@
     <div class="fw-main">
 
       <div class="fw-sidebar">
-        <p style="color:red" class="error-message"><%= error %></p>
         <div id="EntryForm">
           <form action="/" method="POST">
-            <label>Weight:</label><input type="number" name="weight"></br>
-            <input type="submit" value="Submit">
+            <label>Weight:</label>
+            <input class="fw-input" type="number" name="weight"></br>
+            <button class="fw-btn" type="submit">Submit</button>
           </form>
         </div>
         <div>
           <p> Create Group </p>
           <form action="/group/create" method="POST">
-            <label>Groupname:</label><input type="text" name="groupname"></br>
-            <input type="submit" value="Submit">
+            <label>Groupname:</label>
+            <input class="fw-input"  type="text" name="groupname"></br>
+            <button class="fw-btn" type="submit">Submit</button>
           </form>
         </div>
         <div>
@@ -31,15 +32,7 @@
             
           </ul>
         </div>
-        <div>
-          <p> Add to Group </p>
-          <form action="/group/add" method="POST">
-
-          <label>Groupname:</label><input type="text" name="groupname"></br>
-          <label>Username:</label><input type="text" name="username"></br>
-          <input type="submit" value="Submit">
-          </form>
-        </div>
+        
       </div>
       
       <div class="fw-content">

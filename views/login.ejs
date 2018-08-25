@@ -14,10 +14,15 @@
         <div class="fw-content">
             <p>Login here</p>
             <div>
-                <form method="POST" action="/users/login">
-                    Username: <input type="text" name="username"></br>
-                    Password: <input type="password" name="password"></br>
-                    <input type="submit" value="Login">
+                <form class="fw-form" method="POST" action="/users/login">
+                    <div class="fw-input-group">
+                        <p>Username: </p><input class="fw-input" type="text" name="username"></br>
+                    </div>
+                    <div class="fw-input-group">
+                    <p>Password: </p><input class="fw-input" ype="password" name="password"></br>
+                    </div>
+                    
+                    <button class="fw-btn" type="submit">Login</button>
                 </form>
             </div>
         <div>
