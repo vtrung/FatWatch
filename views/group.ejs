@@ -3,17 +3,24 @@
 <%- include('partials/head'); -%>
 <body>
     <div id="fw-header">
-        <h1>FatWatch</h1>
+      <h1><a class="fw-title" href="/">FriendScale</a></h1>
         <a href="/logout">Logout</a>
     </div>
     <div class="fw-main">
         <div class="fw-sidebar">
             <h1><%= group.groupname %></h1>
-            <% for(var i=0; i<groupmembers.length; i++) {%>
-                <p><%= groupmembers[i].username %></p>
-            <% } %>
-
             <div>
+              <p>Members</p>
+              <ul class="fw-list">
+                <% for(var i=0; i<groupmembers.length; i++) {%>
+                    <li><%= groupmembers[i].username %></li>
+                <% } %>
+              </ul>
+              
+            </div>
+            
+
+            <div class="group-new">
                 <p> Add New User to Group </p>
                 <form action="/group/add" method="POST">
                 <input type="hidden" name="groupid" value="<%= group.id %>"/>

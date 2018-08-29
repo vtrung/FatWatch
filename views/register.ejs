@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Register to FatWatch</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel='stylesheet' href='/libraries/vis.min.css' />
-    <script src="/libraries/vis.min.js"></script>
-</head>
+<%- include('partials/head'); -%>
 <body>
+    <div id="fw-header">
+        <h1><a class="fw-title" href="/">FriendScale</a></h1>
+    </div>
+    <div class="fw-main">
 
-<h1>FatWatch</h1>
-<p>Register here</p>
-<div>
-    <form method="POST" action="/createuser">
-        Username: <input type="text" name="username"></br>
-        Password: <input type="password" name="password"></br>
-        <input type="submit" value="Create">
-    </form>
-</div>
+        <div class="fw-sidebar">
+            <p>No account? <a href="/register">Register</a> </p>
+        </div>
+        
+        <div class="fw-content">
+            <p class="fw-title-2">Register New User</p>
+            <div>
+                <form class="fw-form" method="POST" action="/createuser">
+                    <div class="fw-input-group">
+                        <p>Username: </p><input class="fw-input" type="text" name="username"></br>
+                    </div>
+                    <div class="fw-input-group">
+                    <p>Password: </p><input class="fw-input" type="password" name="password"></br>
+                    </div>
+                    
+                    <button class="fw-btn" type="submit">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <div class="fw-footer">
+        Copyright© 2018 FriendScale All Rights Reserved.
+    </div>
 </body>
 </html>
