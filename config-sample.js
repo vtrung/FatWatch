@@ -5,5 +5,5 @@
 var config = {};
 
 config.mongoConnectionString = "mongodb://localhost:27017/test";
-
+config.port = 3000;
 module.exports = config;

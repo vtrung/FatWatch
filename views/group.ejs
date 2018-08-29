@@ -14,10 +14,9 @@
             <% } %>
 
             <div>
-                <p> Add to Group </p>
+                <p> Add New User to Group </p>
                 <form action="/group/add" method="POST">
                 <input type="hidden" name="groupid" value="<%= group.id %>"/>
-                <label>Groupname:</label><input class="fw-input" type="text" name="groupname"></br>
                 <label>Username:</label><input class="fw-input" type="text" name="username"></br>
                 <button class="fw-btn" type="submit">Submit</button>
                 </form>
