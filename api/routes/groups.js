@@ -1,9 +1,12 @@
-var express = require('express');
-var router = express.Router();
-const Entry = require('../models/entry');
-const User = require('../models/user');
-const Group = require('../models/group');
-const GroupMember = require('../models/groupmember');
+'use strict';
+
+const express = require('express');
+const router = express.Router();
+
+const Entry = require('../../models/entry');
+const User = require('../../models/user');
+const Group = require('../../models/group');
+const GroupMember = require('../../models/groupmember');
 
 //Check Authentication and User Sessions
 function checkAuth(req, res, next) {
@@ -11,7 +14,8 @@ function checkAuth(req, res, next) {
     //console.log(req.session);
     if (!req.session.user_id) {
         //redirect to login
-        res.render('login');
+        //res.render('login');
+        res.send("Not Authorized");
     } else {
         next();
     }

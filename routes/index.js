@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
-const Entry = require('../model/entry');
-const User = require('../model/user');
-const Group = require('../model/group');
+const Entry = require('../models/entry');
+const User = require('../models/user');
+const Group = require('../models/group');
+const Auth = require('../modules/auth');
 
 //Check Authentication and User Sessions
 function checkAuth(req, res, next) {
@@ -68,7 +69,7 @@ router.post('/createuser', function(req,res,next){
   console.log('Received POST CreateUser');
   console.log(req.body);
   if(req.body.username){
-    var user = CreateUser(req.body.username, req.body.password);
+    var user = CreateUser(req.body.username, Auth.hash(req.body.password, 'secret'));
     user.save(function(err, u){
       if(err){
         console.log(err);
