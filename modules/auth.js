@@ -3,7 +3,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const config = require('../config.js');
+const config = require('../config');
 
 // PRIVATE and PUBLIC key
 var privateKey  = fs.readFileSync('./ignore/jwtRS256.key', 'utf8');

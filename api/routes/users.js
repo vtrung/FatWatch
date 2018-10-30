@@ -3,36 +3,11 @@
 const express = require('express');
 const User = require('../../models/user');
 const Pass = require('../../models/password');
-const Entry = require('../../models/entry');
-const Auth = require('../../modules/auth');
+const Login = require('../../modules/login');
 
 const router = express.Router();
 
-//Check Authentication and User Sessions
-var checkAuth = (req, res, next) => {
-    var token = req.headers.auth;
-    //console.log(req.ip);
-
-    var verify = Auth.verify(token, {
-        issuer:  req.ip
-    });
-
-    if (token && verify) {
-        console.log(verify);
-        User.findById(verify.user, (err, user)=>{
-            if(err){
-                res.send({status: 'not authorized'});
-            }
-            console.log(user);
-            req.user = user;
-            next();
-        })
-    } else {
-        res.send({status: 'not authorized'});
-    }
-};
-
-router.get('/', checkAuth, function(req, res, next) {
+router.get('/', Login.checkAuth, function(req, res, next) {
   res.send(req.user);
 });
 
@@ -52,16 +27,10 @@ router.post('/', function(req, res, next){
                 res.send({status:"failed login"});
                 //next();
             }
-            if(pass.password == Auth.hash(password, pass.salt)){
-                var token = Auth.sign({user: u._id},{
-                    issuer: req.ip,
-                });
-                console.log(token);
-                res.send(token);
-            } else {
-                res.send({status:"failed login"});
-                //next();
-            }
+
+            res.send(pass, password, {
+                issuer: req.ip
+            })
         })
             
     })

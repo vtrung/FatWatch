@@ -7,22 +7,11 @@ const Entry = require('../../models/entry');
 const User = require('../../models/user');
 const Group = require('../../models/group');
 const GroupMember = require('../../models/groupmember');
+const Login = require('../../modules/login');
 
-//Check Authentication and User Sessions
-function checkAuth(req, res, next) {
-    //console.log("checkauth");
-    //console.log(req.session);
-    if (!req.session.user_id) {
-        //redirect to login
-        //res.render('login');
-        res.send("Not Authorized");
-    } else {
-        next();
-    }
-  };
 
 /* GET users listing. */
-router.get('/id/:id',checkAuth, function(req, res, next) {
+router.get('/id/:id', Login.checkAuth, function(req, res, next) {
     var groupid = req.params.id;
     GetGroupMembersByGroupId(groupid, function(err, gm){
         console.log(gm);
@@ -43,7 +32,7 @@ router.get('/id/:id',checkAuth, function(req, res, next) {
   });
 
 
-router.get('/list',checkAuth, function(req, res, next){
+router.get('/list', Login.checkAuth, function(req, res, next){
     var user_id = req.session.user_id;
     console.log(user_id);
     GetUserGroups(user_id, function(err, result){
@@ -57,7 +46,7 @@ router.get('/list',checkAuth, function(req, res, next){
     })
 });
 
-router.post('/create',checkAuth, function(req, res, next) {
+router.post('/create', Login.checkAuth, function(req, res, next) {
     var groupname = req.body.groupname;
     var userid = req.session.user_id;
     var group = CreateGroup(groupname, userid);
@@ -89,7 +78,7 @@ router.post('/create',checkAuth, function(req, res, next) {
     
   });
 
-  router.post('/add',checkAuth, function(req, res, next) {
+  router.post('/add',Login.checkAuth, function(req, res, next) {
     //var groupname = req.body.groupname;
     var username = req.body.username;
     var groupid = req.body.groupid;
