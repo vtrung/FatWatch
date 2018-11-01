@@ -4,30 +4,29 @@ const Entry = require('../models/entry');
 const User = require('../models/user');
 const Group = require('../models/group');
 const Auth = require('../modules/auth');
+const Login = require('../modules/login');
 
-//Check Authentication and User Sessions
-function checkAuth(req, res, next) {
-  console.log("checkauth");
-  console.log(req.session);
-  if (!req.session.user_id) {
-      //redirect to login
-      res.render('login');
-  } else {
-      next();
-  }
-};
+
 
 /* GET home page. */
-router.get('/',checkAuth, function(req, res, next) {
-  var userid = req.session.user_id;
+router.get('/',Login.checkAuthCookie, function(req, res, next) {
+  var userid = req.user._id;
   var username = req.session.username;
   //console.log(req.query);
   var errmsg = req.query;
-  Entry.find({user:userid}, function(err, result){
+  Entry.find({user:userid})
+  .populate('user')
+  .exec()
+  .then( (result, err) =>{
+    if(err){
+      res.send({err:err, result:result});
+      return;
+    }
     console.log(result);
-    res.render('index', { title: 'FatWatch', username:username, entries: result, error: errmsg, jsentries: JSON.stringify(result) });
+    res.render('index', { title: 'FatWatch', username:"test", entries: result, error: errmsg, jsentries: JSON.stringify(result) });
   });
 });
+
 
 router.get('/login', function(req, res, next) {
     res.render('login', { title: 'FatWatch'});

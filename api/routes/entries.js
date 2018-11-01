@@ -18,8 +18,30 @@ router.get('/', Login.checkAuth, function(req, res, next) {
             res.send(entries);
         }
     })
-    //res.send(req.user);
 });
+
+router.get('/:id', Login.checkAuth, function(req, res, next){
+    GroupMember.find({group:id}, function(err, members){
+        if(err){
+            res.send(err);
+        } else {
+            var users = [];
+            members.forEach(function(m){
+                users.push(m.user);
+            })
+            Entry.find({'user':{$in: list}})
+            .populate('user')
+            .exec()
+            .then(function(err, entries){
+                if(err){
+                    res.send(err);
+                } else {
+                    res.send(entries);
+                }
+            })
+        }
+    })
+})
 
 
 module.exports = router;

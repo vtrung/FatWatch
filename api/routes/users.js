@@ -27,10 +27,11 @@ router.post('/', function(req, res, next){
                 res.send({status:"failed login"});
                 //next();
             }
-
-            res.send(pass, password, {
+            var result = Login.validateUser(pass, password, {
                 issuer: req.ip
-            })
+            });
+
+            res.send(result);
         })
             
     })

@@ -10,40 +10,45 @@ const GroupMember = require('../../models/groupmember');
 const Login = require('../../modules/login');
 
 
-/* GET users listing. */
-router.get('/id/:id', Login.checkAuth, function(req, res, next) {
+/* GET List of Users in a Group */
+router.get('list/:id', Login.checkAuth, function(req, res, next) {
     var groupid = req.params.id;
-    GetGroupMembersByGroupId(groupid, function(err, gm){
-        console.log(gm);
-        GetGroupById(groupid, function(err, g){
-            var list = UserConvertToList(gm);
-            //res.render('group', { groupmembers: gm, group:g});
-            console.log(list);
-            Entry.find({
-                'user':{$in: list}
-            }, (err, e) =>{
-                console.log(e);
-                res.render('group', { groupmembers: gm, group:g, entries:JSON.stringify(e)});
-            });
-            
-        })
-        //res.render('group', { group: result});
-    });
+    GroupMember.find({group:groupid})
+    .populate('group user')
+    .exec()
+    .then((err, users)=>{
+        if(err){
+            res.send(err);
+        } else {
+            res.send(users);
+        }
+    })
   });
 
 
-router.get('/list', Login.checkAuth, function(req, res, next){
-    var user_id = req.session.user_id;
-    console.log(user_id);
-    GetUserGroups(user_id, function(err, result){
+router.get('/', Login.checkAuth, function(req, res, next){
+    //var user_id = req.session.user_id;
+    //console.log(user_id);
+    console.log(req.user);
+    GroupMember.find({user: req.user._id})
+    .populate("group")
+    .exec()
+    .then((err, groups)=>{
         if(err){
-            console.log("error");
-            res.send({});
+            res.send(err);
         } else {
-            res.send(result);
+            res.send(groups);
         }
-        
     })
+    // GetUserGroups(user_id, function(err, result){
+    //     if(err){
+    //         console.log("error");
+    //         res.send({});
+    //     } else {
+    //         res.send(result);
+    //     }
+        
+    // })
 });
 
 router.post('/create', Login.checkAuth, function(req, res, next) {
@@ -212,22 +217,6 @@ function GetGroupById(groupid, callback){
     })
 }
 
-function GetGroupMembersByGroupId(groupid, callback){
-    
-    GroupMember.find({group:groupid}, (err, res) => {
-        if(err || res.length < 1){
-            callback(err, null);
-        } else {
-            var list = [];
-            res.forEach((gm) => {
-                if(gm.user){
-                    list.push(gm.user);
-                }
-            })
-            GetUsersInList(list, callback);
-        }
-    })
-}
 
 
 

@@ -27,10 +27,33 @@ module.exports = {
             res.send({status: 'not authorized'});
         }
     },
+    checkAuthCookie: (req, res, next) => {
+        var token = req.cookies.auth;
+        //console.log(req.ip);
+        console.log(req.cookies);
+    
+        var verify = Auth.verify(token, {
+            issuer:  req.ip
+        });
+    
+        if (token && verify) {
+            console.log(verify);
+            User.findById(verify.user, (err, user)=>{
+                if(err){
+                    res.render('login');
+                }
+                console.log(user);
+                req.user = user;
+                next();
+            })
+        } else {
+            res.render('login');
+        }
+    },
 
     validateUser: ( passworddoc, password, payload) => {
-        if(pass.password == Auth.hash(password, passworddoc.salt)){
-            var token = Auth.sign({user: passwordoc.user}, payload);
+        if(passworddoc.password == Auth.hash(password, passworddoc.salt)){
+            var token = Auth.sign({user: passworddoc.user}, payload);
             //console.log(token);
             return token;
         } else {

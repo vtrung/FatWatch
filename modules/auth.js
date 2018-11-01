@@ -14,7 +14,7 @@ module.exports = {
     sign: (payload, options) => {
         var signOptions = {
             issuer:  options.issuer,
-            expiresIn:  "30d",    // 30 days validity
+            expiresIn:  "5m",    // 30 days validity
             algorithm:  "RS256"    
         };
         var token = jwt.sign(payload, privateKey, signOptions);
@@ -26,7 +26,7 @@ module.exports = {
     verify: (token, options) => {
         var verifyOptions = {
             issuer:  options.issuer,
-            expiresIn:  "30d",
+            expiresIn:  "5m",
             algorithm:  "RS256"
         };
 
