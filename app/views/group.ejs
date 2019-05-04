@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head'); -%>
+<body>
+    <div id="fw-header">
+      <h1><a class="fw-title" href="/">FriendScale</a></h1>
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="fw-main">
+        <div class="fw-sidebar">
+            <h1><%= group.groupname %></h1>
+            <div>
+              <p>Members</p>
+              <ul class="fw-list">
+                <% for(var i=0; i<groupmembers.length; i++) {%>
+                    <li><%= groupmembers[i].username %></li>
+                <% } %>
+              </ul>
+              
+            </div>
+            
+
+            <div class="group-new">
+                <p> Add New User to Group </p>
+                <form action="/group/add" method="POST">
+                <input type="hidden" name="groupid" value="<%= group.id %>"/>
+                <label>Username:</label><input class="fw-input" type="text" name="username"></br>
+                <button class="fw-btn" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="fw-content">
+            <div id="entry-graph">
+            </div>
+        </div>
+    </div>
+    <% if (entries) { %>
+      <script>
+         var weightEntries = <%- entries %>;  
+         //console.log(weightEntries);   
+         //sanitizeData(weightEntries);
+         var container = document.getElementById('entry-graph');
+
+          var items = [
+            // {x: '2014-06-13', y: 30, group: 0},
+            // {x: '2014-06-14', y: 10, group: 0},
+            // {x: '2014-06-14', y: 10, group: 1},
+            // {x: '2014-06-14', y: 10, group: 1},
+            // {x: '2014-06-15', y: 15, group: 1},
+            // {x: '2014-06-16', y: 30, group: 0},
+            // {x: '2014-06-17', y: 10, group: 1},
+            // {x: '2014-06-18', y: 15, group: 1}
+          ];
+
+          var options = {
+            zoomable: false,
+            moveable: false
+          }
+
+          for(var i=0; i < weightEntries.length; i++){
+            console.log(weightEntries[i]);
+            console.log(weightEntries[i].user);
+            if(weightEntries[i].datetime){
+              var newitem = {
+                x: weightEntries[i].datetime.toLocaleString(),
+                y: weightEntries[i].weight,
+                group: weightEntries[i].user
+              }
+              items.push(newitem);
+            }
+          }
+
+          items = sanitizeData(weightEntries);
+
+          var dataset = new vis.DataSet(items);
+          
+          var graph2d = new vis.Graph2d(container, dataset, options); 
+          // var options = {
+          //   start: '2014-06-10',
+          //   end: '2014-06-18'
+          // };
+          //var graph2d = new vis.Graph2d(container, dataset, options); 
+
+          
+
+          function customDateFormat(datetime){
+            var newdate = new Date(datetime.toLocaleString());
+            //newdate.setDate(datetime);
+            console.log(newdate);
+            var mm = newdate.getMonth()+1;
+            var dd = newdate.getDate();
+            var yy = newdate.getFullYear();
+            return (yy + "-" + mm + "-" + dd);
+          }
+
+          $(document).ready(function(){
+            GetList();
+          })
+      </script>
+    <% } %>
+</body>
+</html>

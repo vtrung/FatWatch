@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/head'); -%>
+  <body>
+    <div id="fw-header">
+    <h1><a class="fw-title" href="/">FriendScale</a></h1>
+      <p>Hello, <%= username %></p>
+      <a href="/logout">Logout</a>
+    </div>
+
+    <div class="fw-main">
+
+      <div class="fw-sidebar">
+        <div id="EntryForm">
+          <form action="/" method="POST">
+            <label>Weight:</label>
+            <input class="fw-input" type="number" name="weight"></br>
+            <button class="fw-btn" type="submit">Submit</button>
+          </form>
+        </div>
+
+        <div id="EntryList">
+          <ul>
+            <% for(var i=0; i< entries.length; i++) { %>
+              <li>
+                      <% if(entries[i].datetime){ %>
+                      date:<%= entries[i].datetime.toLocaleString() %>
+                      / weight: <%= entries[i].weight %>
+                      <% } %>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+
+        <div class="group-list">
+          <p> Member of Groups </p>
+          <ul id="group-list">
+            
+          </ul>
+        </div>
+
+        <div class="group-new">
+          <p> Create a New Group </p>
+          <form action="/group/create" method="POST">
+            <label>Groupname:</label>
+            <input class="fw-input"  type="text" name="groupname"></br>
+            <button class="fw-btn" type="submit">Submit</button>
+          </form>
+        </div>
+        
+        
+      </div>
+      
+      <div class="fw-content">
+        
+        <div id="entry-graph">
+        </div>
+      </div>
+      
+      
+      
+      
+    </div>
+
+    <div class="fw-footer">
+        Copyright© 2018 FriendScale All Rights Reserved.
+      </div>
+    
+
+    <% if (entries) { %>
+      <script>
+         var weightEntries = <%- jsentries %>;  
+         //console.log(weightEntries);   
+         //sanitizeData(weightEntries);
+         var container = document.getElementById('entry-graph');
+
+          var items = [
+            // {x: '2014-06-13', y: 30, group: 0},
+            // {x: '2014-06-14', y: 10, group: 0},
+            // {x: '2014-06-14', y: 10, group: 1},
+            // {x: '2014-06-14', y: 10, group: 1},
+            // {x: '2014-06-15', y: 15, group: 1},
+            // {x: '2014-06-16', y: 30, group: 0},
+            // {x: '2014-06-17', y: 10, group: 1},
+            // {x: '2014-06-18', y: 15, group: 1}
+          ];
+
+          var options = {
+            zoomable: false,
+            moveable: false
+          }
+
+          for(var i=0; i < weightEntries.length; i++){
+            if(weightEntries[i].datetime){
+              var newitem = {
+                x: weightEntries[i].datetime.toLocaleString(),
+                y: weightEntries[i].weight
+              }
+              items.push(newitem);
+            }
+          }
+
+          items = sanitizeData(weightEntries);
+
+          var dataset = new vis.DataSet(items);
+          
+          var graph2d = new vis.Graph2d(container, dataset, options); 
+          // var options = {
+          //   start: '2014-06-10',
+          //   end: '2014-06-18'
+          // };
+          //var graph2d = new vis.Graph2d(container, dataset, options); 
+
+          
+
+          function customDateFormat(datetime){
+            var newdate = new Date(datetime.toLocaleString());
+            //newdate.setDate(datetime);
+            console.log(newdate);
+            var mm = newdate.getMonth()+1;
+            var dd = newdate.getDate();
+            var yy = newdate.getFullYear();
+            return (yy + "-" + mm + "-" + dd);
+          }
+
+          $(document).ready(function(){
+            GetList();
+          })
+      </script>
+    <% } %>
+  </body>
+</html>
